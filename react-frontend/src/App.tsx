@@ -66,8 +66,11 @@ const App: FC<any> = () => {
         }
         { activeMembership &&
           (
+            // toggle in ModalHeader expects a function.  Previously it had an arrowhead function.
+            // arrowhead function would capture the event but not call closeDetailsModal
+            // fixed by setting toggle to the closeDetailsModal function.
             <Modal isOpen={!!activeMembership}>
-              <ModalHeader toggle={e => closeDetailsModal}>User Details</ModalHeader>
+              <ModalHeader toggle={closeDetailsModal}>User Details</ModalHeader>
               <ModalBody>
                 <div>
                   <p>Name: {activeMembership.user?.name}</p>
