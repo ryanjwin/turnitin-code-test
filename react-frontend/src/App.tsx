@@ -16,7 +16,8 @@ const App: FC<any> = () => {
   }
 
   const updateSearch = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearch(event.target.value);
+    //update search to lower case to be case insensitive
+    setSearch(event.target.value.toLowerCase());
   }
 
   const loadDetailsModal = (membership: Membership) => {
@@ -47,8 +48,8 @@ const App: FC<any> = () => {
               </thead>
               <tbody>
                   { memberships.filter(membership => !search
-                    || membership.user?.name.toLowerCase().includes(search.toLowerCase())
-                    || membership.user?.email.includes(search))
+                    || membership.user?.name.toLowerCase().includes(search)
+                    || membership.user?.email.toLowerCase().includes(search))
                     .map(membership => (
                       <tr key={membership.id}>
                         <td>{membership.user?.name}</td>
