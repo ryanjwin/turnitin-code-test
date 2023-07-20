@@ -8,6 +8,7 @@ import integrations.turnitin.com.membersearcher.client.MembershipBackendClient;
 import integrations.turnitin.com.membersearcher.model.Membership;
 import integrations.turnitin.com.membersearcher.model.MembershipList;
 import integrations.turnitin.com.membersearcher.model.User;
+import integrations.turnitin.com.membersearcher.model.UserList;
 import integrations.turnitin.com.membersearcher.service.MembershipService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,8 @@ public class MembershipServiceTest {
 
 	private MembershipList members;
 
+	private UserList users;
+
 	private User userOne;
 
 	private User userTwo;
@@ -53,13 +56,17 @@ public class MembershipServiceTest {
 				.setId("1")
 				.setName("test one")
 				.setEmail("test1@example.com");
+		
 		userTwo = new User()
 				.setId("2")
 				.setName("test two")
 				.setEmail("test2@example.com");
+					
+		users = new UserList().setUsers(List.of(userOne, userTwo));
+		
 		when(membershipBackendClient.fetchMemberships()).thenReturn(CompletableFuture.completedFuture(members));
-		when(membershipBackendClient.fetchUser("1")).thenReturn(CompletableFuture.completedFuture(userOne));
-		when(membershipBackendClient.fetchUser("2")).thenReturn(CompletableFuture.completedFuture(userTwo));
+		// modify to use fetchUsers() call instead of fetchUser("1") and fetchUser("2")
+		when(membershipBackendClient.fetchUsers()).thenReturn(CompletableFuture.completedFuture(users));
 	}
 
 	@Test
