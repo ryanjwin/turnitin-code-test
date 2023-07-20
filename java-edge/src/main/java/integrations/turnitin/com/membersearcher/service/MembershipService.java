@@ -19,8 +19,8 @@ public class MembershipService {
 
 	/**
 	 * Method to fetch all memberships with their associated user details included.
-	 * This method calls out to the php-backend service and fetches all memberships
-	 * all users, it then stores them in their respsective lists. It then iteraates over
+	 * This method calls out to the php-backend service and fetches all memberships and
+	 * all users, storing them in their respsective lists. It then iteraates over
 	 * the members and associates them with their corresponding users.
 	 *
 	 * @return A CompletableFuture containing a fully populated MembershipList object.
