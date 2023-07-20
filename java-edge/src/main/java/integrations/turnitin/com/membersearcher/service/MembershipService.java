@@ -1,9 +1,13 @@
 package integrations.turnitin.com.membersearcher.service;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 import integrations.turnitin.com.membersearcher.client.MembershipBackendClient;
 import integrations.turnitin.com.membersearcher.model.MembershipList;
+import integrations.turnitin.com.membersearcher.model.UserList;
+import integrations.turnitin.com.membersearcher.model.Membership;
+import integrations.turnitin.com.membersearcher.model.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,14 +26,29 @@ public class MembershipService {
 	 * @return A CompletableFuture containing a fully populated MembershipList object.
 	 */
 	public CompletableFuture<MembershipList> fetchAllMembershipsWithUsers() {
-		return membershipBackendClient.fetchMemberships()
-				.thenCompose(members -> {
-					CompletableFuture<?>[] userCalls = members.getMemberships().stream()
-							.map(member -> membershipBackendClient.fetchUser(member.getUserId())
-									.thenApply(member::setUser))
-							.toArray(CompletableFuture<?>[]::new);
-					return CompletableFuture.allOf(userCalls)
-							.thenApply(nil -> members);
-				});
+		// fetch all memberships
+		CompletableFuture<MembershipList> membershipsFuture = membershipBackendClient.fetchMemberships();
+		// fetch all users
+		CompletableFuture<UserList> usersFuture = membershipBackendClient.fetchUsers();
+
+		// wait for membershipsFuture and usersFuture to finish
+		return CompletableFuture.allOf(usersFuture, membershipsFuture)
+			.thenApply(nil -> {
+				MembershipList membershipsList = membershipsFuture.join();
+				UserList usersList = usersFuture.join();
+				// lambda function to get user by id
+				// could also use a private function or 
+				Function<String, User> userToInsert =  userId -> {
+					for (User user: usersList.getUsers()) {
+						if (user.getId().equals(userId)) return user;
+					}
+					return null;
+				};
+				// build the membership list
+				for (Membership member : membershipsList.getMemberships()) {
+					member.setUser(userToInsert.apply(member.getUserId()));
+				}
+				return membershipsList;
+			});
 	}
 }
