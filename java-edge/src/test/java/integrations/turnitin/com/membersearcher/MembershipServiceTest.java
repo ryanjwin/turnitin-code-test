@@ -52,20 +52,17 @@ public class MembershipServiceTest {
 								.setRole("student")
 								.setUserId("2")
 				));
-
-		users = new UserList()
-				.setUsers(List.of(
-						new User()
-								.setId("1")
-								.setName("test one")
-								.setEmail("test1@example.com"),
+		userOne = new User()
+				.setId("1")
+				.setName("test one")
+				.setEmail("test1@example.com");
+		
+		userTwo = new User()
+				.setId("2")
+				.setName("test two")
+				.setEmail("test2@example.com");
 					
-						new User()
-								.setId("2")
-								.setName("test two")
-								.setEmail("test2@example.com")
-
-				));
+		users = new UserList().setUsers(List.of(userOne, userTwo));
 		
 		when(membershipBackendClient.fetchMemberships()).thenReturn(CompletableFuture.completedFuture(members));
 		// modify to use fetchUsers() call instead of fetchUser("1") and fetchUser("2")
