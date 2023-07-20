@@ -37,7 +37,7 @@ public class MembershipService {
 				MembershipList membershipsList = membershipsFuture.join();
 				UserList usersList = usersFuture.join();
 				// lambda function to get user by id
-				// could also use a private function or 
+				// could also modify UserList to a map
 				Function<String, User> userToInsert =  userId -> {
 					for (User user: usersList.getUsers()) {
 						if (user.getId().equals(userId)) return user;
