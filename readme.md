@@ -1,3 +1,28 @@
+# Changes I made
+This is my solution for the coding challenge.  I have left comments were my changes are, including my rationale but I wanted to take the opportunity here to explain my changes in more depth.
+
+### Task 1 - Refactor the java-edge service to use the `/api.php/users` to fetch all users at once
+
+This one was a bit more complicated.  I modified the `fetchAllMembershipsWithUsers` function in java-edge/src/main/java/integrations/turnitin/com/membersearcher/service/MembershipService.java to make two calls to  `membershipBackendClient`. The first call like before was to `fetchMemberships`. The second call was to `fetchUsers`. 
+
+I then wrote a lambda function to be able to do linear search on the returned `usersList`.  This was ok because of how small the input is but if the input were larger it would've probably been more efficient to modify `UserList` to use a Map instead that way we could efficiently look up all users.
+
+I then utilized a for loop to associate each member with its respective user data.  Utilizing the lambda function as I did so.
+
+### Task 2 - Make search by email case insensitive
+
+For this part I modified the `updateSearch` to immediatley convert the text to lower case before saving the new search text. This way we would not have to convert search to lower case twice on lines 51 and 52 of react-frontend/App.tsx.
+
+I also converted the email to lower case as well. 
+
+This made everything lower case thus making the email search case insensitive.
+
+### Task 3 - Fix the closing button on user details
+
+For this one I modified the `toggle` on the `ModalHeader` on line 73 of react-frontend/App.tsx.
+
+The toggle was initially using an arrowhead function.  This would simply capture the event but not actually call `closeDetailsModal`. To fix this I got rid of the arrowhead and simply assigned `toggle` to the `closeDetailsModal` function.
+
 # DO NOT FORK!
 **In the interest of fairness for everyone, please DO NOT fork this repo through Github. This is to avoid accidental sharing of the solution. If you are taking the test, please select "Use this template" to create your own repo and get started instead.**
 
